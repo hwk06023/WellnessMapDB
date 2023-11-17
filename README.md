@@ -17,7 +17,7 @@ RAM : 256GB
 - [Parsing Roadview Image Data](#parsing-roadview-image-data)
 - [Reconstructing Roadview Image Data & Data labeling](#reconstructing-roadview-image-data--data-labeling)
 - [LLaVA fine-tuning](#llava-large-language-and-visual-assistant-fine-tuning)
-- [Inference & Create Dataset](#inference--create-dataset)
+- [Inference & Create Database](#inference--create-database)
 
 <br/>
 
@@ -27,17 +27,102 @@ RAM : 256GB
 
 ## Parsing Roadview Image Data
 
+<img src="img/pano_1.png" width="300">
+<img src="img/pano_2.png" width="300">
+
+We got the roadview image data by using KakaoMap's API. <br/>
 
 ## Reconstructing Roadview Image Data & Data labeling
 
+First, we use the CLIPSeg to get the segmentation map. <br/>
+
+<img src="img/clipseg_1.png" width="500">
+
+Then, we can get the segmentation map. <br/>
+
+<img src="img/clipseg_2.png" width="300">
+
+So, we can get the images that contain sidewalk segmentation. <br/>
+
+<img src="img/ahalf.png" width="300">
+
+But, this image is not enough to use. So, we need to reconstructing. <br/>
+
+<br/><br/>
 
 ## LLaVA (Large Language and Visual Assistant) fine-tuning
 
 By using LoRA, we can fine-tuning efficiently. <br/>
 
-<img src="readme/1.png" width="500">
-<img src="readme/2.png" width="500">
+<img src="img/1.png" width="500">
+<img src="img/2.png" width="500">
+
+#### Install requirements
+
+[check here](https://github.com/haotian-liu/LLaVA)
+
+```
+pip install --upgrade pip
+pip install -e .
+pip install -e ".[train]"
+pip install flash-attn --no-build-isolation
+git pull
+pip install -e .
+```
 
 
-## Inference & Create Dataset
+#### Set hyperparameters
+
+```
+#!/bin/bash
+
+deepspeed llava/train/train_mem.py \
+    --lora_enable True --lora_r 128 --lora_alpha 256 --mm_projector_lr 2e-5 \
+    --deepspeed ./scripts/zero3.json \
+    --model_name_or_path lmsys/vicuna-13b-v1.5 \
+    --version v1 \
+    --data_path ./playground/data/dataset.json \
+    --image_folder ./playground/data/roadview_images \
+    --vision_tower openai/clip-vit-large-patch14-336 \
+    --pretrain_mm_mlp_adapter ./checkpoints/llava-v1.5-13b-pretrain/mm_projector.bin \
+    --mm_projector_type mlp2x_gelu \
+    --mm_vision_select_layer -2 \
+    --mm_use_im_start_end False \
+    --mm_use_im_patch_token False \
+    --image_aspect_ratio pad \
+    --group_by_modality_length True \
+    --bf16 False \
+    --output_dir ./checkpoints/llava-v1.5-13b-lora \
+    --num_train_epochs 15 \
+    --per_device_train_batch_size 16 \
+    --per_device_eval_batch_size 4 \
+    --gradient_accumulation_steps 1 \
+    --evaluation_strategy "no" \
+    --save_strategy "steps" \
+    --save_steps 50000 \
+    --save_total_limit 1 \
+    --learning_rate 2e-4 \
+    --weight_decay 0. \
+    --warmup_ratio 0.03 \
+    --lr_scheduler_type "cosine" \
+    --logging_steps 1 \
+    --tf32 False \
+    --model_max_length 2048 \
+    --gradient_checkpointing True \
+    --dataloader_num_workers 4 \
+    --lazy_preprocess True \
+    --report_to wandb
+```   
+
+#### LoRA fine-tuning
+
+```
+sh scripts/v1_5/finetune_lora.sh
+```
+
+<br/>
+
+
+
+## Inference & Create Database
 
