@@ -21,6 +21,6 @@ def get_roadview_image(api_key, location):
         print(f"Error: {response.status_code}, {response.text}")
 
 if __name__ == "__main__":
-    api_key = "YOUR_CLIENT_ID" # Client ID
+    api_key = "" # Client ID
     location = (37.5665, 126.9780) 
     get_roadview_image(api_key, location)
