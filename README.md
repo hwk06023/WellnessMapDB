@@ -32,6 +32,8 @@ RAM : 256GB
 
 We got the roadview image data by using KakaoMap's API. <br/>
 
+<br/><br/>
+
 ## Reconstructing Roadview Image Data & Data labeling
 
 First, we use the CLIPSeg to get the segmentation map. <br/>
@@ -46,7 +48,37 @@ So, we can get the images that contain sidewalk segmentation. <br/>
 
 <img src="img/ahalf.png" width="300">
 
-But, this image is not enough to use. So, we need to reconstructing. <br/>
+But, this image has distortion. <br/>
+So, this image isn't enough to use. So, we need to reconstructing. <br/><br/>
+
+<img src="img/distort.png" width="200">
+
+```python
+import cv2
+import numpy as np
+
+camera_matrix = np.array([[fx, 0, cx],
+                          [0, fy, cy],
+                          [0, 0, 1]])
+dist_coeffs = np.array([k1, k2, p1, p2, k3])
+
+image = cv2.imread('img/ahalf.png')
+
+new_camera_matrix, _ = cv2.getOptimalNewCameraMatrix(camera_matrix, dist_coeffs, image.shape[:2], 1)
+
+undistorted_image = cv2.undistort(image, camera_matrix, dist_coeffs, None, new_camera_matrix)
+
+cv2.imshow('Undistorted Image', undistorted_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
+<br/> <br/>
+
+<img src="img/undistorted.png" width="300">
+
+Finally, we can get the image that is reconstructed. <br/>
+
 
 <br/><br/>
 
@@ -120,7 +152,12 @@ deepspeed llava/train/train_mem.py \
 sh scripts/v1_5/finetune_lora.sh
 ```
 
-<br/>
+#### result
+
+<img src="img/result.png" width="500">
+
+
+<br/><br/>
 
 
 
