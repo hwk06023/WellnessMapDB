@@ -52,6 +52,8 @@ So, we can get the images that contain sidewalk segmentation. <br/>
 But, this image has distortion. <br/>
 So, this image isn't enough to use. <br/>
 
+<br/>
+
 ### First way
 
 Get undistort image by using opencv
@@ -208,3 +210,19 @@ sh scripts/v1_5/finetune_lora.sh
 #### In map
 
 <img src="img/result_2.png" width="600"> <br/>
+
+<br/>
+
+<b>As a result, we can get the database that contains the information of the sidewalk.</b> <br/>
+
+<br/><br/>
+
+### Reference
+
+- [LLaVA](https://llava-vl.github.io)
+
+- [CLIPSeg](https://huggingface.co/docs/transformers/model_doc/clipseg)
+
+- [KakaoMap API](https://apis.map.kakao.com/web/documentation/)
+
+
