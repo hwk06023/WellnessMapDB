@@ -43,5 +43,5 @@ def get_kakao_roadview_image(api_key, location, heading=0, pitch=0, size=(640, 4
 
 if __name__ == "__main__":
     api_key = "" # Client ID
-    location = (462438, 1102745) 
+    location = (462407, 1102810) 
     get_kakao_roadview_image(api_key, location)

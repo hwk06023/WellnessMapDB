@@ -1,15 +1,17 @@
 import cv2
 import numpy as np
 
-fx = 822.79041
-fy = 822.79041
-cx = 313.47335
-cy = 231.31299
-k1 = -0.28341
-k2 = 0.07374
+# Camera Matrix for barrel distortion
+fx = 800
+fy = 800
+cx = 400 
+cy = 250
+k1 = -0.2
+k2 = 0.01
 p1 = 0.00000
 p2 = 0.00000
 k3 = 0.00000
+
 
 camera_matrix = np.array([[fx, 0, cx],
                           [0, fy, cy],

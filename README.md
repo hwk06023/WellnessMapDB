@@ -27,8 +27,9 @@ RAM : 256GB
 
 ## Parsing Roadview Image Data
 
-<img src="img/pano_1.png" width="300">
-<img src="img/pano_2.png" width="300">
+<img src="img/pano_3.png" width="300"> <br/>
+<img src="img/pano_1.png" width="300"> <br/>
+<img src="img/pano_2.png" width="300"> <br/>
 
 We got the roadview image data by using KakaoMap's API. <br/>
 
@@ -42,16 +43,20 @@ First, we use the CLIPSeg to get the segmentation map. <br/>
 
 Then, we can get the segmentation map. <br/>
 
-<img src="img/clipseg_2.png" width="300">
+<img src="img/clipseg_3.png" width="500">
 
 So, we can get the images that contain sidewalk segmentation. <br/>
 
-<img src="img/ahalf.png" width="300">
+<img src="img/ahalf.png" width="250">
 
 But, this image has distortion. <br/>
-So, this image isn't enough to use. So, we need to reconstructing. <br/><br/>
+So, this image isn't enough to use. <br/>
 
-<img src="img/distort.png" width="200">
+### First way
+
+Get undistort image by using opencv
+
+<img src="img/distort.png" width="250">
 
 ```python
 import cv2
@@ -73,11 +78,21 @@ cv2.waitKey(0)
 cv2.destroyAllWindows()
 ```
 
-<br/> <br/>
 
-<img src="img/undistorted.png" width="300">
+<img src="img/undistorted.png" width="250">
 
-Finally, we can get the image that is reconstructed. <br/>
+This image is better than before. <br/>
+But, this image is still distorted. <br/>
+
+### Second way
+
+Get a nice image from the roadview api with angle. <br/>
+
+<img src="img/getapiwithangle.png" width="500">
+
+We can get the image with angle in map_api. <br/>
+So, we can get the image that is not distorted. <br/>
+
 
 
 <br/><br/>
@@ -108,7 +123,7 @@ pip install -e .
 ```
 #!/bin/bash
 
-deepspeed llava/train/train_mem.py \
+deepspeed llava/train/train.py \
     --lora_enable True --lora_r 128 --lora_alpha 256 --mm_projector_lr 2e-5 \
     --deepspeed ./scripts/zero3.json \
     --model_name_or_path lmsys/vicuna-13b-v1.5 \
@@ -142,8 +157,7 @@ deepspeed llava/train/train_mem.py \
     --model_max_length 2048 \
     --gradient_checkpointing True \
     --dataloader_num_workers 4 \
-    --lazy_preprocess True \
-    --report_to wandb
+    --lazy_preprocess True 
 ```   
 
 #### LoRA fine-tuning
@@ -152,14 +166,20 @@ deepspeed llava/train/train_mem.py \
 sh scripts/v1_5/finetune_lora.sh
 ```
 
-#### result
+#### Train loss
 
-<img src="img/result.png" width="500">
+<img src="img/train_loss.png" width="500">
+
 
 
 <br/><br/>
 
-
-
 ## Inference & Create Database
 
+#### Inferece result to DB
+
+<img src="img/result_1.png" width="600"> <br/>
+
+#### In map
+
+<img src="img/result_2.png" width="600"> <br/>
