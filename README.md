@@ -88,6 +88,30 @@ But, this image is still distorted. <br/>
 
 Get a nice image from the roadview api with angle. <br/>
 
+```python
+import requests
+import json
+import cv2
+import numpy as np
+
+def get_image_with_angle(panoid, heading, pitch, fov, size):
+    url = "https://map.kakao.com/mapapi/panoidView"
+    params = {
+        "panoid": panoid,
+        "heading": heading,
+        "pitch": pitch,
+        "fov": fov,
+        "size": size,
+        "scale": 1,
+        "format": "jpg",
+        "quality": 80,
+        "client": "sdk"
+    }
+    response = requests.get(url, params=params)
+    image = cv2.imdecode(np.frombuffer(response.content, np.uint8), cv2.IMREAD_COLOR)
+    return image
+```
+
 <img src="img/getapiwithangle.png" width="500">
 
 We can get the image with angle in map_api. <br/>
