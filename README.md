@@ -1,6 +1,7 @@
 # WellnessMapDB
 
 This project for pedestrians with disabilities to have wellness. <br/>
+This project provides directions for how to solve social problems. <br/>
 
 ### Test Environment
 
@@ -83,7 +84,7 @@ cv2.destroyAllWindows()
 
 <img src="img/undistorted.png" width="250">
 
-This image is better than before. <br/>
+This way can be better than before. <br/>
 But, this image is still distorted. <br/>
 
 <br/>
