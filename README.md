@@ -84,7 +84,7 @@ cv2.destroyAllWindows()
 
 <img src="img/undistorted.png" width="250">
 
-This way can be better than before. <br/>
+This way can be better than before (?) <br/>
 But, this image is still distorted. <br/>
 
 <br/>
